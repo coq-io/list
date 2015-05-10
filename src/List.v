@@ -32,13 +32,13 @@ Fixpoint iter_par {E : Effect.t} {A : Type} (f : A -> C.t E unit) (l : list A)
     ret tt
   end.
 
-Module Spec.
-  Import Io.Spec.
+Module Run.
+  Import Io.Run.
 
   Fixpoint map_seq {E : Effect.t} {A B C : Type} {f : A -> C.t E B}
     (l : list C) (x : C -> A) (y : C -> B)
-    (run_f : forall (v : C), Spec.t (f (x v)) (y v)) {struct l}
-    : Spec.t (map_seq f (List.map x l)) (List.map y l).
+    (run_f : forall (v : C), Run.t (f (x v)) (y v)) {struct l}
+    : Run.t (map_seq f (List.map x l)) (List.map y l).
     destruct l as [|v l].
     - apply Ret.
     - apply (Let (run_f v)).
@@ -47,9 +47,9 @@ Module Spec.
   Defined.
 
   Definition map_seq_id {E : Effect.t} {A B : Type} {f : A -> C.t E B}
-    (l : list B) (x : B -> A) (run_f : forall (v : B), Spec.t (f (x v)) v)
-    : Spec.t (List.map_seq f (List.map x l)) l.
+    (l : list B) (x : B -> A) (run_f : forall (v : B), Run.t (f (x v)) v)
+    : Run.t (List.map_seq f (List.map x l)) l.
     rewrite <- List.map_id.
     now apply map_seq.
   Defined.
-End Spec.
+End Run.
